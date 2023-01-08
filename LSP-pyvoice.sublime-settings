@@ -1,0 +1,20 @@
+{
+    "command": [
+        "$server_path"
+    ],
+    "env": {},
+    "settings": {},
+    "selector": "source.python",
+    // ST3
+    "languages": [
+        {
+            "languageId": "python",
+            "scopes": [
+                "source.python"
+            ],
+            "syntaxes": [
+                "Packages/Python/Python.sublime-syntax"
+            ],
+        }
+    ],
+}
