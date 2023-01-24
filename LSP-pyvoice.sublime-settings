@@ -2,8 +2,11 @@
     "command": [
         "$server_path"
     ],
+    "python_binary": null,
     "env": {},
-    "settings": {},
+    "settings": {
+        "venvPath":".venv"
+    },
     "selector": "source.python",
     // ST3
     "languages": [

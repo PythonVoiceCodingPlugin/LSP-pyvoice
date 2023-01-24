@@ -1,0 +1,15 @@
+{
+  "windows":{
+    ">=3000": [
+      "lsp_utils",
+      "sublime_lib"
+    ]
+  },
+  "*": {
+    "*": [
+      "lsp_utils",
+      "sublime_lib",
+      "multiprocessing"
+    ]
+  }
+}

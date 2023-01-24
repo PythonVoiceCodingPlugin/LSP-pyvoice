@@ -1,0 +1,19 @@
+[
+    {
+        "caption": "Preferences: LSP-pycoice Settings",
+        "command": "edit_settings",
+        "args": {
+            "base_file": "${packages}/LSP-pycoice/LSP-pycoice.sublime-settings",
+            "default": "// Settings in here override those in \"LSP-pycoice/LSP-pycoice.sublime-settings\"\n{\n\t$0\n}\n"
+        }
+    },
+    {
+        "caption":"LSP-pycoice: Get Spoken",
+        "command": "lsp_execute",
+        "args": {
+            "command_name": "get_spoken",
+            "session_name": "LSP-pyvoice",
+            "command_args": ["$file_uri","$position"]
+        }                   
+    }
+]
