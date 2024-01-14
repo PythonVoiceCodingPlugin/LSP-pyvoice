@@ -8,17 +8,17 @@ class PyvoiceListener(sublime_plugin.EventListener):
     def __init__(self):
         self.last_tick = 0.0
 
-    def _update(self, view):
+    def _update(self, view,generate_imports=True):
         view.run_command(
             "lsp_execute",
             {
                 "command_name": "get_spoken",
                 "session_name": "LSP-pyvoice",
-                "command_args": ["$file_uri", "$position"],
+                "command_args": ["$file_uri", "$position",generate_imports],
             },
         )
 
-    def _kick(self, view):
+    def _kick(self, view,generate_imports=True):
         # print("view", view)
         if view is None:
             return
@@ -32,7 +32,7 @@ class PyvoiceListener(sublime_plugin.EventListener):
         self._update(view)
 
     def on_modified_async(self, view):
-        self._kick(view)
+        self._kick(view,False)
 
     def on_load_async(self, view):
         self._kick(view)
