@@ -47,8 +47,15 @@ class Pyvoice(PipClientHandler):
         if python_binary and isinstance(python_binary, str):
             return python_binary
         if sublime.platform() == "windows":
-            # 3.11 and above does not work... due to pygls pydantic bug
+            # with update to latest pygls got around the python3.11 and above crashing
             allowed_python_binaries = [
+                os.path.expanduser(
+                    r"~\AppData\Local\Programs\Python\Python312\python.exe"
+                ),
+                os.path.expanduser(
+                    r"~\AppData\Local\Programs\Python\Python311\python.exe"
+                ),
+
                 os.path.expanduser(
                     r"~\AppData\Local\Programs\Python\Python310\python.exe"
                 ),
