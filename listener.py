@@ -22,24 +22,30 @@ class TriggerInfo:
 
 
 class PyvoiceListener(sublime_plugin.EventListener):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        print("Initializing PyvoiceListener")
         self.trigger_info = TriggerInfo(
             last_tick=time.perf_counter(), view=None, last_event=time.perf_counter()
         )
-        self.lock = threading.RLock()
+        self.lock = threading.Lock()
+        self.kill_switch = False
         self.thread = threading.Thread(target=self.loop_check_trigger)
         self.thread.start()
+        super(PyvoiceListener, self).__init__(*args, **kwargs)
 
     def __del__(self):
+        self.kill_switch = True
         self.thread.join(1.0)
         super(PyvoiceListener, self).__del__()
 
     def loop_check_trigger(self):
         while True:
+            if self.kill_switch:
+                return
             with self.lock:
                 now = time.perf_counter()
                 if (
-                    self.trigger_info.view is not None
+                    self._is_python(self.trigger_info.view)
                     and self.trigger_info.last_tick < now - 3.0
                     and self.trigger_info.last_tick < self.trigger_info.last_event
                 ):
@@ -53,7 +59,16 @@ class PyvoiceListener(sublime_plugin.EventListener):
                         self.trigger_info.view, self.trigger_info.generate_imports
                     )
                     self.trigger_info = new_trigger_info
-            time.sleep(0.2)
+            time.sleep(2.2)
+
+    def _is_python(self, view):
+        if view is None:
+            return False
+        if view.element() is not None:
+            return False
+        if view.file_name() is None:
+            return False
+        return view.file_name().endswith(".py")
 
     def _update(self, view, generate_imports=True):
         print("Pyvoice: begining update", view, view.file_name(), generate_imports)
@@ -67,6 +82,7 @@ class PyvoiceListener(sublime_plugin.EventListener):
         )
 
     def _kick(self, view, generate_imports=True):
+        # print("Pyvoice: kicking", view, view.file_name(), generate_imports, self.lock)
         with self.lock:
             now = time.perf_counter()
             new_trigger_info = TriggerInfo(
