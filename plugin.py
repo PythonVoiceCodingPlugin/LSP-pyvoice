@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+from datetime import datetime
 from multiprocessing.connection import Client
 
 import sublime
@@ -28,7 +29,7 @@ def get_client(service="default"):
     encoded_auth = credentials[service]
     auth = base64.b64decode(encoded_auth)
     address = get_server_path(service)
-    print("connecting to", address, encoded_auth)
+    # print("Pyvoice: connecting to", address)
     conn = Client(address, authkey=auth)
     return conn
 
@@ -55,7 +56,6 @@ class Pyvoice(PipClientHandler):
                 os.path.expanduser(
                     r"~\AppData\Local\Programs\Python\Python311\python.exe"
                 ),
-
                 os.path.expanduser(
                     r"~\AppData\Local\Programs\Python\Python310\python.exe"
                 ),
@@ -85,6 +85,7 @@ class Pyvoice(PipClientHandler):
 
     @notification_handler("voice/sendRpc")
     def m_voice_sendRpc(self, params):
+        start = datetime.now()
         conn = get_client()
         msg = {
             "jsonrpc": "2.0",
@@ -94,7 +95,12 @@ class Pyvoice(PipClientHandler):
         }
         client_bytes = json.dumps(msg).encode("utf-8")
         conn.send_bytes(client_bytes)
-        print("sent ipc", len(client_bytes))
+        end = datetime.now()
+        print(
+            "Pyvoice: sent {} bytes ipc at {} over {} sec".format(
+                len(client_bytes), end, (end - start).total_seconds()
+            )
+        )
 
 
 def plugin_loaded() -> None:

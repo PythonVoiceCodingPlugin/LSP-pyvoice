@@ -1,5 +1,6 @@
 import threading
 import time
+from datetime import datetime
 
 import sublime
 import sublime_plugin
@@ -71,7 +72,13 @@ class PyvoiceListener(sublime_plugin.EventListener):
         return view.file_name().endswith(".py")
 
     def _update(self, view, generate_imports=True):
-        print("Pyvoice: begining update", view, view.file_name(), generate_imports)
+        print(
+            "Pyvoice: begining '{}' update at {} of {}".format(
+                "full" if generate_imports else "partial",
+                datetime.now(),
+                view,
+            )
+        )
         view.run_command(
             "lsp_execute",
             {
