@@ -1,14 +1,62 @@
+import threading
 import time
 
 import sublime
 import sublime_plugin
 
 
+class TriggerInfo:
+    def __init__(self, last_tick, view, last_event, generate_imports=True):
+        super(TriggerInfo, self).__init__()
+        self.last_tick = last_tick
+        self.view = view
+        self.last_event = last_event
+        self.generate_imports = generate_imports
+
+    def __str__(self):
+        return "TriggerInfo(last_tick={}, view={}, last_event={}, generate_imports={})".format(
+            self.last_tick, self.view, self.last_event, self.generate_imports
+        )
+
+    __repr__ = __str__
+
+
 class PyvoiceListener(sublime_plugin.EventListener):
     def __init__(self):
-        self.last_tick = 0.0
+        self.trigger_info = TriggerInfo(
+            last_tick=time.perf_counter(), view=None, last_event=time.perf_counter()
+        )
+        self.lock = threading.RLock()
+        self.thread = threading.Thread(target=self.loop_check_trigger)
+        self.thread.start()
+
+    def __del__(self):
+        self.thread.join(1.0)
+        super(PyvoiceListener, self).__del__()
+
+    def loop_check_trigger(self):
+        while True:
+            with self.lock:
+                now = time.perf_counter()
+                if (
+                    self.trigger_info.view is not None
+                    and self.trigger_info.last_tick < now - 3.0
+                    and self.trigger_info.last_tick < self.trigger_info.last_event
+                ):
+                    new_trigger_info = TriggerInfo(
+                        last_tick=now,
+                        view=self.trigger_info.view,
+                        last_event=self.trigger_info.last_event,
+                        generate_imports=self.trigger_info.generate_imports,
+                    )
+                    self._update(
+                        self.trigger_info.view, self.trigger_info.generate_imports
+                    )
+                    self.trigger_info = new_trigger_info
+            time.sleep(0.2)
 
     def _update(self, view, generate_imports=True):
+        print("Pyvoice: begining update", view, view.file_name(), generate_imports)
         view.run_command(
             "lsp_execute",
             {
@@ -19,17 +67,16 @@ class PyvoiceListener(sublime_plugin.EventListener):
         )
 
     def _kick(self, view, generate_imports=True):
-        # print("view", view)
-        if view is None:
-            return
-
-        now = time.perf_counter()
-        nice = 3.0
-        # print("_kick", view, now, "last", self.last_tick)
-        if now < self.last_tick + nice:
-            return
-        self.last_tick = now
-        self._update(view, generate_imports)
+        with self.lock:
+            now = time.perf_counter()
+            new_trigger_info = TriggerInfo(
+                last_tick=self.trigger_info.last_tick,
+                view=view,
+                last_event=now,
+                generate_imports=generate_imports,
+            )
+            if self.trigger_info.last_event < new_trigger_info.last_event:
+                self.trigger_info = new_trigger_info
 
     def on_modified_async(self, view):
         self._kick(view, False)
@@ -37,5 +84,5 @@ class PyvoiceListener(sublime_plugin.EventListener):
     def on_load_async(self, view):
         self._kick(view)
 
-    def on_activated_async(self, view):
+    def on_activated(self, view):
         self._kick(view)
