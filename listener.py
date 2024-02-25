@@ -53,14 +53,9 @@ class PyvoiceListener(sublime_plugin.EventListener):
                     self.lock.locked(),
                 )
                 with self.lock:
-                    now = time.perf_counter()
-                    if (
-                        self._is_python(self.trigger_info.view)
-                        and self.trigger_info.last_tick < now - 3.0
-                        and self.trigger_info.last_tick < self.trigger_info.last_event
-                    ):
+                    if self.should_update(self.trigger_info.view):
                         new_trigger_info = TriggerInfo(
-                            last_tick=now,
+                            last_tick=time.perf_counter(),
                             view=self.trigger_info.view,
                             last_event=self.trigger_info.last_event,
                             generate_imports=self.trigger_info.generate_imports,
@@ -76,6 +71,16 @@ class PyvoiceListener(sublime_plugin.EventListener):
                 time.sleep(2.2)
         except Exception:
             logger.exception("loop_check_trigger: failure %s", lock.locked())
+
+    def should_update(self, view):
+        now = time.perf_counter()
+        if (
+            self._is_python(view)
+            and self.trigger_info.last_tick < now - 3.0
+            and self.trigger_info.last_tick < self.trigger_info.last_event
+        ):
+            return True
+        return False
 
     def _is_python(self, view):
         if view is None:
