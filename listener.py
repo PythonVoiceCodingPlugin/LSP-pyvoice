@@ -144,5 +144,11 @@ class PyvoiceListener(sublime_plugin.EventListener):
     def on_load_async(self, view):
         self._kick(view)
 
-    def on_activated(self, view):
+    def on_reload_async(self, view):
+        self._kick(view)
+
+    def on_revert_async(self, view):
+        self._kick(view)
+
+    def on_activated_async(self, view):
         self._kick(view)
