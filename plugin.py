@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import os
 from datetime import datetime
 from multiprocessing.connection import Client
@@ -12,6 +13,8 @@ from lsp_utils import notification_handler
 from lsp_utils.pip_client_handler import PipClientHandler
 
 CREDENTIALS_FILE = os.path.expanduser(os.path.join("~", ".voicerpc.json"))
+
+logger = logging.getLogger(__name__)
 
 
 def get_server_path(service):
@@ -96,9 +99,9 @@ class Pyvoice(PipClientHandler):
         client_bytes = json.dumps(msg).encode("utf-8")
         conn.send_bytes(client_bytes)
         end = datetime.now()
-        print(
-            "Pyvoice: sent {} bytes ipc at {} over {} sec".format(
-                len(client_bytes), end, (end - start).total_seconds()
+        logger.info(
+            "sent {} bytes ipc over {} sec".format(
+                len(client_bytes), (end - start).total_seconds()
             )
         )
 
