@@ -34,7 +34,7 @@ class PyvoiceListener(sublime_plugin.EventListener):
         self.trigger_info = TriggerInfo(
             last_tick=time.perf_counter(), view=None, last_event=time.perf_counter()
         )
-        self.lock = threading.Lock()
+        self.cv = threading.Condition()
         self.kill_switch = False
         self.thread = threading.Thread(
             target=self.loop_check_trigger, name="LoopThread"
@@ -47,39 +47,35 @@ class PyvoiceListener(sublime_plugin.EventListener):
         self.thread.join(1.0)
         super(PyvoiceListener, self).__del__()
 
-    def loop_check_trigger(self):
+    def single_update_attempt(self):
+        logger.debug("Beggining single update attempt")
         try:
-            while True:
-                if self.kill_switch:
-                    return
-                logger.debug(
-                    "loop_check_trigger: acquiring lock from status %s",
-                    self.lock.locked(),
+            with self.cv:
+                self.cv.wait_for(self.should_update)
+                logger.debug("Should update satisfied from %s", self.trigger_info)
+                new_trigger_info = TriggerInfo(
+                    last_tick=time.perf_counter(),
+                    view=self.trigger_info.view,
+                    last_event=self.trigger_info.last_event,
+                    generate_imports=self.trigger_info.generate_imports,
                 )
-                with self.lock:
-                    if self.should_update(self.trigger_info.view):
-                        new_trigger_info = TriggerInfo(
-                            last_tick=time.perf_counter(),
-                            view=self.trigger_info.view,
-                            last_event=self.trigger_info.last_event,
-                            generate_imports=self.trigger_info.generate_imports,
-                        )
-                        self._update(
-                            self.trigger_info.view, self.trigger_info.generate_imports
-                        )
-                        self.trigger_info = new_trigger_info
-                logger.debug(
-                    "loop_check_trigger: releasing lock to status %s and sleeping",
-                    self.lock.locked(),
-                )
-                time.sleep(2.2)
+                self._update(self.trigger_info.view, self.trigger_info.generate_imports)
+                self.trigger_info = new_trigger_info
         except Exception:
-            logger.exception("loop_check_trigger: failure %s", lock.locked())
+            logger.exception("Error during single update attempt:")
 
-    def should_update(self, view):
+    def loop_check_trigger(self):
+        while not self.kill_switch:
+            self.single_update_attempt()
+            time.sleep(3)
+
+    def should_update(self):
         now = time.perf_counter()
+        view = self.trigger_info.view
         if (
-            self._is_python(view)
+            self._is_foreground(view)
+            and view.is_valid()
+            and self._is_python(view)
             and self.trigger_info.last_tick < now - 3.0
             and self.trigger_info.last_tick < self.trigger_info.last_event
         ):
@@ -95,18 +91,17 @@ class PyvoiceListener(sublime_plugin.EventListener):
             return False
         return view.file_name().endswith(".py")
 
-    def _update(self, view, generate_imports=True):
+    def _is_foreground(self, view):
         window = sublime.active_window()
         active_view = window.active_view()
+        return view == active_view
+
+    def _update(self, view, generate_imports=True):
         logger.info(
-            "begining '%s' update of view %s %s %s %s %s %s",
-            "full" if generate_imports else "partial",
+            "begining '%s' update of view %s %s",
+            "FULL" if generate_imports else "PARTIAL",
             view,
-            view.is_valid(),
             view.file_name(),
-            view.window(),
-            active_view,
-            active_view.file_name(),
         )
         view.run_command(
             "lsp_execute",
@@ -116,36 +111,29 @@ class PyvoiceListener(sublime_plugin.EventListener):
                 "command_args": ["$file_uri", "$position", generate_imports],
             },
         )
-        logger.debug(
-            "finished update of view %s in window %s %s",
-            view,
-            window,
-            window.is_valid(),
-        )
+        logger.debug("finished update of view %s in window %s", view, view.window())
 
     def _kick(self, view, generate_imports=True):
-        logger.debug(
-            "kicking %s %s %s %s",
-            view,
-            view.file_name(),
-            generate_imports,
-            self.lock.locked(),
+        now = time.perf_counter()
+        new_trigger_info = TriggerInfo(
+            last_tick=self.trigger_info.last_tick,
+            view=view,
+            last_event=now,
+            generate_imports=generate_imports,
         )
-        logger.debug("is lock already in use? %s", self.lock.locked())
-        with self.lock:
-            now = time.perf_counter()
-            logger.debug("acquired lock")
-            new_trigger_info = TriggerInfo(
-                last_tick=self.trigger_info.last_tick,
-                view=view,
-                last_event=now,
-                generate_imports=generate_imports,
+        logger.debug("new event %s", new_trigger_info)
+        with self.cv:
+            logger.debug(
+                "lock aqcuired - comparing %s against %s",
+                new_trigger_info,
+                self.trigger_info,
             )
             if self.trigger_info.last_event < new_trigger_info.last_event:
-                logger.debug(
-                    "updating from %s to %s", self.trigger_info, new_trigger_info
-                )
                 self.trigger_info = new_trigger_info
+                logger.debug("notifying loop thread")
+                self.cv.notify()
+            else:
+                logger.debug("no-op")
 
     def on_modified_async(self, view):
         self._kick(view, False)
