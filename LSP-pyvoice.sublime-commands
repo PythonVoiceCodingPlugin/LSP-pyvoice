@@ -8,6 +8,11 @@
         }
     },
     {
+        "caption":"LSP-pycoice: Quick Install Grammars",
+        "command": "quick_install_grammars",
+        "args": {}
+    },
+    {
         "caption":"LSP-pycoice: Get Spoken",
         "command": "lsp_execute",
         "args": {
@@ -15,5 +20,5 @@
             "session_name": "LSP-pyvoice",
             "command_args": ["$file_uri","$position"]
         }                   
-    }
+    },
 ]
