@@ -17,8 +17,12 @@ class TriggerInfo:
         self.generate_imports = generate_imports
 
     def __str__(self):
-        return "TriggerInfo(last_tick={}, view={}, last_event={}, generate_imports={})".format(
-            self.last_tick, self.view, self.last_event, self.generate_imports
+        return "TriggerInfo(last_tick={}, view={}, filename={}, last_event={}, generate_imports={})".format(
+            self.last_tick,
+            self.view,
+            self.view.file_name() if self.view is not None else None,
+            self.last_event,
+            self.generate_imports,
         )
 
     __repr__ = __str__
