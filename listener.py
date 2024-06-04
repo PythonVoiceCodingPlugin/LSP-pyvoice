@@ -7,6 +7,8 @@ import sublime_plugin
 
 logger = logging.getLogger(__name__)
 
+from LSP.plugin.core.registry import windows
+
 
 class TriggerInfo:
     def __init__(self, last_tick, view, last_event, generate_imports=True):
@@ -74,7 +76,6 @@ class PyvoiceListener(sublime_plugin.EventListener):
         view = self.trigger_info.view
         if (
             self._is_foreground(view)
-            and view.is_valid()
             and self._is_python(view)
             and self.trigger_info.last_tick < now - 3.0
             and self.trigger_info.last_tick < self.trigger_info.last_event
@@ -89,12 +90,16 @@ class PyvoiceListener(sublime_plugin.EventListener):
             return False
         if view.file_name() is None:
             return False
-        return view.file_name().endswith(".py")
+        wm = windows.lookup(view.window())
+        if wm is None:
+            return False
+        session = wm.get_session("LSP-pyvoice", view.file_name())
+        return session is not None
 
     def _is_foreground(self, view):
         window = sublime.active_window()
         active_view = window.active_view()
-        return view == active_view
+        return view == active_view and view.is_valid()
 
     def _update(self, view, generate_imports=True):
         logger.info(
