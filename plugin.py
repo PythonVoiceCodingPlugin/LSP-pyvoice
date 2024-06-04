@@ -12,29 +12,9 @@ from LSP.plugin.core.typing import Dict
 from lsp_utils import notification_handler
 from lsp_utils.pip_client_handler import PipClientHandler
 
-CREDENTIALS_FILE = os.path.expanduser(os.path.join("~", ".voicerpc.json"))
+from .ipc import send_notification
 
 logger = logging.getLogger(__name__)
-
-
-def get_server_path(service):
-    if os.name == "nt":
-        return r"\\.\pipe\voicerpc\{}\{}".format(
-            os.path.split(os.path.expanduser("~"))[-1], service
-        )
-    else:
-        return os.path.expanduser(os.path.join("~/.voicerpc/{}.sock".format(service)))
-
-
-def get_client(service="default"):
-    with open(CREDENTIALS_FILE) as f:
-        credentials = json.load(f)
-    encoded_auth = credentials[service]
-    auth = base64.b64decode(encoded_auth)
-    address = get_server_path(service)
-    # print("Pyvoice: connecting to", address)
-    conn = Client(address, authkey=auth)
-    return conn
 
 
 class Pyvoice(PipClientHandler):
@@ -88,22 +68,21 @@ class Pyvoice(PipClientHandler):
 
     @notification_handler("voice/sendRpc")
     def m_voice_sendRpc(self, params):
-        start = datetime.now()
-        conn = get_client()
-        msg = {
-            "jsonrpc": "2.0",
-            "method": params["command"],
-            "params": params["params"],
-            # "id": 2,
-        }
-        client_bytes = json.dumps(msg).encode("utf-8")
-        conn.send_bytes(client_bytes)
-        end = datetime.now()
-        logger.info(
-            "sent {} bytes ipc over {} sec".format(
-                len(client_bytes), (end - start).total_seconds()
-            )
-        )
+        method = params["command"]
+        cmd_params = params["params"]
+        if not isinstance(method, str):
+            raise ValueError("method must be a string")
+
+        msg = method
+        if method == "enhance_spoken":
+            try:
+                list_name = cmd_params[0]
+                if isinstance(list_name, str):
+                    msg = f"{method} ({list_name})"
+            except IndexError:
+                pass
+
+        send_notification(method, cmd_params, log_msg=msg)
 
 
 def plugin_loaded() -> None:
