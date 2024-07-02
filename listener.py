@@ -8,6 +8,7 @@ import sublime_plugin
 logger = logging.getLogger(__name__)
 
 from LSP.plugin.core.registry import windows
+from LSP.plugin.core.types import FEATURES_TIMEOUT
 
 
 class TriggerInfo:
@@ -61,12 +62,7 @@ class PyvoiceListener(sublime_plugin.EventListener):
                     last_event=self.trigger_info.last_event,
                     generate_imports=self.trigger_info.generate_imports,
                 )
-                sublime.set_timeout_async(
-                    lambda: self._update(
-                        self.trigger_info.view, self.trigger_info.generate_imports
-                    ),
-                    300,
-                )
+                self._update(self.trigger_info.view, self.trigger_info.generate_imports)
                 self.trigger_info = new_trigger_info
         except Exception:
             logger.exception("Error during single update attempt:")
@@ -123,8 +119,8 @@ class PyvoiceListener(sublime_plugin.EventListener):
         )
         logger.debug("finished update of view %s in window %s", view, view.window())
 
-    def _kick(self, view, generate_imports=True):
-        now = time.perf_counter()
+    def _kick(self, view, generate_imports=True, timestamp=None):
+        now = timestamp or time.perf_counter()
         new_trigger_info = TriggerInfo(
             last_tick=self.trigger_info.last_tick,
             view=view,
@@ -146,7 +142,10 @@ class PyvoiceListener(sublime_plugin.EventListener):
                 logger.debug("no-op")
 
     def on_modified_async(self, view):
-        self._kick(view, False)
+        timestamp = time.perf_counter()
+        sublime.set_timeout_async(
+            lambda: self._kick(view, True, timestamp=timestamp), FEATURES_TIMEOUT
+        )
 
     def on_load_async(self, view):
         self._kick(view)
