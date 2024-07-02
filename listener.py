@@ -61,7 +61,12 @@ class PyvoiceListener(sublime_plugin.EventListener):
                     last_event=self.trigger_info.last_event,
                     generate_imports=self.trigger_info.generate_imports,
                 )
-                self._update(self.trigger_info.view, self.trigger_info.generate_imports)
+                sublime.set_timeout_async(
+                    lambda: self._update(
+                        self.trigger_info.view, self.trigger_info.generate_imports
+                    ),
+                    300,
+                )
                 self.trigger_info = new_trigger_info
         except Exception:
             logger.exception("Error during single update attempt:")
