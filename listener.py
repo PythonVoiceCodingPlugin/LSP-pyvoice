@@ -8,7 +8,7 @@ import sublime_plugin
 logger = logging.getLogger(__name__)
 
 from LSP.plugin.core.registry import windows
-from LSP.plugin.core.types import FEATURES_TIMEOUT
+from LSP.plugin.core.types import FEATURES_TIMEOUT, debounced
 
 
 class TriggerInfo:
@@ -143,8 +143,12 @@ class PyvoiceListener(sublime_plugin.EventListener):
 
     def on_modified_async(self, view):
         timestamp = time.perf_counter()
-        sublime.set_timeout_async(
-            lambda: self._kick(view, True, timestamp=timestamp), FEATURES_TIMEOUT
+        change_count = view.change_count()
+        debounced(
+            lambda: self._kick(view, False, timestamp=timestamp),
+            FEATURES_TIMEOUT,
+            lambda: view.is_valid() and change_count == view.change_count(),
+            async_thread=True,
         )
 
     def on_load_async(self, view):
