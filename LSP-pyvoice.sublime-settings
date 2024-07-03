@@ -5,7 +5,87 @@
     "python_binary": null,
     "env": {},
     "settings": {
-        "venvPath":".venv"
+        // The base path where your python project is located.
+        // Like all paths in this settings file it can be either
+        // absolute or relative to the path of the sublime project.
+        "project.path": ".",
+
+        // The path to the root of the virtual environment
+        // again either absolute or relative to the sublime project path.
+        "project.environmentPath": null,
+
+        // A list of paths to override the sys path if needed.
+        // WARNING: This will COMPLETELY override the sys.path.
+        // Leave this null to generate sys.path from the environment.
+        "project.sysPath": null,
+
+        // Adds these paths at the end of the sys path.
+        "project.addedSysPath": [],
+
+        // If enabled (default), adds paths from local directories.
+        // Otherwise, you will have to rely on your packages being properly configured on the sys.path.
+        "project.smartSysPath": true,
+
+        // Enable or disable the generation of stdlib imports.
+        "hints.imports.stdlib.enabled": true,
+
+        // Settings for customizing the generation of hints hints for
+        // third-party modules. Pyvoice will try to automatically
+        // discover the  dependencies of your project  and  is going
+        // to generate hints for their modules. In order to do so,pyvoice
+        // will try:
+        // - pep621 dependencies in pyproject.toml
+        // - poetry dependencies in pyproject.toml
+        // - options.install_requires in setup.cfg
+        // - traditional requirements.txt
+        // NOTE: By default hints would be generated ONLY for your top level dependencies
+        // aka distributions that you directly depend on, not transiet dependencies.
+        // default behavior is not satisfactory you can add/exclude
+        // distributions from the settings below.
+
+        // Enable or disable the generation of third-party imports.
+        "hints.imports.thirdParty.enabled": true,
+
+        // A list of third-party distributions to include modules from.
+        "hints.imports.thirdParty.includeDists": [],
+
+        // A list of third-party distributions to exclude.
+        "hints.imports.thirdParty.excludeDists": [],
+
+        // Enable or disable the generation of project imports.
+        "hints.imports.project.enabled": true,
+
+        // Enable or disable the generation of explicit symbols.
+        "hints.imports.explicitSymbols.enabled": true,
+
+        // A list of modules to generate hints hints for their defined symbols.
+        "hints.imports.explicitSymbols.modules": ["typing"],
+
+        // Enable or disable the generation of hints hints for local scope.
+        "hints.expressions.locals.enabled": true,
+        // Hints from param names of the signatures of local scope variables. 
+        "hints.expressions.locals.signature": true,
+
+        // Enable or disable the generation of hints hints for non-local scope.
+        "hints.expressions.nonlocals.enabled": true,
+        // Hints from param names of the signatures of non-local scope variables. 
+        "hints.expressions.nonlocals.signature": true,
+
+        // Enable or disable the generation of hints hints for global scope.
+        "hints.expressions.globals.enabled": true,
+        // Hints from param names of the signatures of global scope variables. 
+        "hints.expressions.globals.signature": true,
+
+        // Enable or disable the generation of hints hints for built-in scope.
+        "hints.expressions.builtins.enabled": true,
+        // Hints from param names of the signatures of built-in scope variables. 
+        "hints.expressions.builtins.signature": true,
+
+        // An upper bound on the number of expressions to generate.
+        "hints.expressions.limit": 2000,
+
+        // Set the logging level for the pyvoice executable.
+        "logging.level": "INFO"
     },
     "selector": "source.python",
     "log_level":"WARNING",
