@@ -197,6 +197,6 @@ The following commands are available in the command palette `ctrl+shift+p` or `c
 
 # Licensing And Acknowledgements
 
+The project is licensed under the GPLv3. I should point out that I have heavily upon [LSP-pylsp](https://github.com/sublimelsp/LSP-pylsp) for the project structure and directly borrowed some logging related code from [PackagedDev](https://github.com/SublimeText/PackageDev/blob/master/) and as a consequence those bits are licensed according to their respected projects licenses!
 
-[LSP-pylsp](https://github.com/sublimelsp/LSP-pylsp)
-[SublimeTalon](https://github.com/trishume/SublimeTalon/blob/master/sublime_talon.py)
+Also worth noting, inspiration for this project was [SublimeTalon](https://github.com/trishume/SublimeTalon/blob/master/sublime_talon.py) though by now there is barely any shared code left.
