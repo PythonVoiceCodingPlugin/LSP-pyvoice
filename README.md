@@ -11,19 +11,19 @@ This is the sublime portion of [pyvoice](https://github.com/PythonVoiceCodingPlu
 
 - [Features](#features)
 - [Installation](#installation)
-	- [Pre-requisites](#pre-requisites)
-	- [Install the plugin](#install-the-plugin)
-	- [Install the grammar](#install-the-grammar)
+    - [Pre-requisites](#pre-requisites)
+    - [Install the plugin](#install-the-plugin)
+    - [Install the grammar](#install-the-grammar)
 - [Settings](#settings)
-	- [Default settings](#default-settings)
-	- [Editing settings globally](#editing-settings-globally)
-	- [Editing settings per project](#editing-settings-per-project)
+    - [Default settings](#default-settings)
+    - [Editing settings globally](#editing-settings-globally)
+    - [Editing settings per project](#editing-settings-per-project)
 - [Enabling or Disabling the plugin](#enabling-or-disabling-the-plugin)
 - [Commands](#commands)
 - [Viewing Logs](#viewing-logs)
-	- [Event Listener logs](#event-listener-logs)
-	- [LSP traffic](#lsp-traffic)
-	- [Server logs](#server-logs)
+    - [Event Listener logs](#event-listener-logs)
+    - [LSP traffic](#lsp-traffic)
+    - [Server logs](#server-logs)
 - [Licensing And Acknowledgements](#licensing-and-acknowledgements)
 
 <!-- /MarkdownTOC -->
@@ -74,35 +74,40 @@ The project builts on top of the standard [LSP client configuration](https://lsp
 
 ```json
 {
+    // the command that actually launches the server process
+    // leave this as is to use the automatically installed
+    // pyvoice language server
     "command": [
         "$server_path"
     ],
-    "python_binary": null,
-    "env": {},
-    "settings": {
-        // The base path where your python project is located.
-        // Like all paths in this settings file it can be either
-        // absolute or relative to the path of the sublime project.
-        "project.path": ".",
-        
-        // The path to the root of the virtual environemnt
-        // again either absolute or relative to the sublime project path.
-        "project.environmentPath": ".venv",
-        
-        // A list of paths to override the sys path if needed.
-        // WARNING: This will COMPLETELY override the sys.path.
-        // Leave this null,to generate sys.path from the environment.
-        "project.sysPath": null,
-        
-        // Adds these paths at the end of the sys path.
-        "project.addedSysPath": [],
-        
-        // If enabled (default), adds paths from local directories.
-        // Otherwise, you will have to rely on your packages being properly configured on the sys.path.
-        "project.smartSysPath": true,
-        
-    },
 
+    // the python interpreter to use for installing and running
+    // the pyvoice language server. it should be 3.8 and above
+    // pypy may also work. If null, the plug-in will try to
+    // automatically pick a suitable interpreter
+    "python_binary": null,
+
+    // environment variables to set when running the language server
+    "env": {},
+
+    // set the log level for the CLIENT SIDE code of the plugin
+    // for example these will produce logs concerning 
+    // - the interprocess communication with the programming 
+    //   by voice framework
+    // - when the plug-in chooses to synchronize spoken hints
+    //   by sending a request to the language server and 
+    //   forrewarding them to the programming by voice system
+    // etc..
+    // it does not affect the level of the logs
+    // that the language server produces itself like
+    // - any errors detected during semantic analysis
+    // - metadata about the hints that it generates
+    // etc..
+    "log_level":"WARNING",
+
+
+    // selectors to match the files that the language server
+    // is responsible for
     "selector": "source.python",
     // ST3
     "languages": [
@@ -116,21 +121,96 @@ The project builts on top of the standard [LSP client configuration](https://lsp
             ],
         }
     ],
+
+    // a set of settings/config that will be sent to the language server
+    // via workspace/didChangeConfiguration notification
+    // or retrieved by the workspace/configuration server side request.
+    // these allow you to customize how pyvoice processes each of your projects
+    "settings": {
+        // The base path where your python project is located.
+        // Like all paths in this settings file it can be either
+        // absolute or relative to the path of the sublime project.
+        "project.path": ".",
+
+        // The path to the root of the virtual environment
+        // again either absolute or relative to the sublime project path.
+        "project.environmentPath": null,
+
+        // A list of paths to override the sys path if needed.
+        // WARNING: This will COMPLETELY override the sys.path.
+        // Leave this null to generate sys.path from the environment.
+        "project.sysPath": null,
+
+        // Adds these paths at the end of the sys path.
+        "project.addedSysPath": [],
+
+        // If enabled (default), adds paths from local directories.
+        // Otherwise, you will have to rely on your packages being properly configured on the sys.path.
+        "project.smartSysPath": true,
+
+        // Enable or disable the generation of stdlib imports.
+        "hints.imports.stdlib.enabled": true,
+
+        // Settings for customizing the generation of hints hints for
+        // third-party modules. Pyvoice will try to automatically
+        // discover the  dependencies of your project  and  is going
+        // to generate hints for their modules. In order to do so,pyvoice
+        // will try:
+        // - pep621 dependencies in pyproject.toml
+        // - poetry dependencies in pyproject.toml
+        // - options.install_requires in setup.cfg
+        // - traditional requirements.txt
+        // NOTE: By default hints would be generated ONLY for your top level dependencies
+        // aka distributions that you directly depend on, not transiet dependencies.
+        // default behavior is not satisfactory you can add/exclude
+        // distributions from the settings below.
+
+        // Enable or disable the generation of third-party imports.
+        "hints.imports.thirdParty.enabled": true,
+
+        // A list of third-party distributions to include modules from.
+        "hints.imports.thirdParty.includeDists": [],
+
+        // A list of third-party distributions to exclude.
+        "hints.imports.thirdParty.excludeDists": [],
+
+        // Enable or disable the generation of project imports.
+        "hints.imports.project.enabled": true,
+
+        // Enable or disable the generation of explicit symbols.
+        "hints.imports.explicitSymbols.enabled": true,
+
+        // A list of modules to generate hints hints for their defined symbols.
+        "hints.imports.explicitSymbols.modules": ["typing"],
+
+        // Enable or disable the generation of hints hints for local scope.
+        "hints.expressions.locals.enabled": true,
+        // Hints from param names of the signatures of local scope variables. 
+        "hints.expressions.locals.signature": true,
+
+        // Enable or disable the generation of hints hints for non-local scope.
+        "hints.expressions.nonlocals.enabled": true,
+        // Hints from param names of the signatures of non-local scope variables. 
+        "hints.expressions.nonlocals.signature": true,
+
+        // Enable or disable the generation of hints hints for global scope.
+        "hints.expressions.globals.enabled": true,
+        // Hints from param names of the signatures of global scope variables. 
+        "hints.expressions.globals.signature": true,
+
+        // Enable or disable the generation of hints hints for built-in scope.
+        "hints.expressions.builtins.enabled": true,
+        // Hints from param names of the signatures of built-in scope variables. 
+        "hints.expressions.builtins.signature": true,
+
+        // An upper bound on the number of expressions to generate.
+        "hints.expressions.limit": 2000,
+
+        // Set the logging level for the pyvoice executable.
+        "logging.level": "INFO"
+    }
 }
 ```
-
-The main settings are
-
-- `command` : the command to launch the language server. Change this if you do not want to use the pyvoice executable that gets automatically installed
-
-- `python_binary` : the python binary to use for launching the language server. If not set, it defaults to 
-the python binary that is in the system PATH
-
-- `env` : the environment variables to use when launching the language server. If not set, it defaults to the current environment variables
-
-- `settings` : the settings to pass to the language server. 
-	- `venvPath` which is the path to the virtual environment for your project. If not set, it defaults to `.venv`
-	- `ext`
 
 
 

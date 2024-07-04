@@ -1,9 +1,56 @@
 {
+    // the command that actually launches the server process
+    // leave this as is to use the automatically installed
+    // pyvoice language server
     "command": [
         "$server_path"
     ],
+
+    // the python interpreter to use for installing and running
+    // the pyvoice language server. it should be 3.8 and above
+    // pypy may also work. If null, the plug-in will try to
+    // automatically pick a suitable interpreter
     "python_binary": null,
+
+    // environment variables to set when running the language server
     "env": {},
+
+    // set the log level for the CLIENT SIDE code of the plugin
+    // for example these will produce logs concerning 
+    // - the interprocess communication with the programming 
+    //   by voice framework
+    // - when the plug-in chooses to synchronize spoken hints
+    //   by sending a request to the language server and 
+    //   forrewarding them to the programming by voice system
+    // etc..
+    // it does not affect the level of the logs
+    // that the language server produces itself like
+    // - any errors detected during semantic analysis
+    // - metadata about the hints that it generates
+    // etc..
+    "log_level":"WARNING",
+
+
+    // selectors to match the files that the language server
+    // is responsible for
+    "selector": "source.python",
+    // ST3
+    "languages": [
+        {
+            "languageId": "python",
+            "scopes": [
+                "source.python"
+            ],
+            "syntaxes": [
+                "Packages/Python/Python.sublime-syntax"
+            ],
+        }
+    ],
+
+    // a set of settings/config that will be sent to the language server
+    // via workspace/didChangeConfiguration notification
+    // or retrieved by the workspace/configuration server side request.
+    // these allow you to customize how pyvoice processes each of your projects
     "settings": {
         // The base path where your python project is located.
         // Like all paths in this settings file it can be either
@@ -86,19 +133,5 @@
 
         // Set the logging level for the pyvoice executable.
         "logging.level": "INFO"
-    },
-    "selector": "source.python",
-    "log_level":"WARNING",
-    // ST3
-    "languages": [
-        {
-            "languageId": "python",
-            "scopes": [
-                "source.python"
-            ],
-            "syntaxes": [
-                "Packages/Python/Python.sublime-syntax"
-            ],
-        }
-    ],
+    }
 }
