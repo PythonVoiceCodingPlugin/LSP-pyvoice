@@ -1,2 +1,1 @@
---extra-index-url https://test.pypi.org/simple/
-pyvoice==0.0.0rc1.post1
+pyvoice-language-server==0.0.0rc1
