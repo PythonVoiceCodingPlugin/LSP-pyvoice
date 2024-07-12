@@ -442,11 +442,11 @@ The following commands are available in the command palette `ctrl+shift+p` or `c
 
 To view full traffic, from the command palette (`ctrl+shift+p` or `cmd+shift+p`) run `LSP: Toggle Log Panel` or via right click at the box in the down left corner
 
-![](https://github.com/PythonVoiceCodingPlugin/assets/sublime/traffic_open.png)
+![](https://github.com/PythonVoiceCodingPlugin/assets/blob/main/sublime/traffic_open.png)
 
 you should see a panel like this
 
-![](https://github.com/PythonVoiceCodingPlugin/assets/sublime/traffic_logs.png)
+![](https://github.com/PythonVoiceCodingPlugin/assets/blob/main/sublime/traffic_logs.png)
 
 
 
