@@ -1,1 +1,1 @@
-pyvoice-language-server==0.0.0rc1
+pyvoice-language-server==0.1.0

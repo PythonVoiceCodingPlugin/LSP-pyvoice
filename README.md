@@ -42,9 +42,6 @@ This plugin is implemented as an [LSP](https://packagecontrol.io/packages/LSP) p
     - expressions (properly formatted)
     - modules and symbols that can be imported
 
-> [!TIP]
-> for example, you have a local variable, called `server` and it has an attribute `project` which itself has has a method `get_environment`,
-> then a speech hint would be generated, so that if the user says `server project get environment` , the voice coding system will insert `server.project.get_environment()`
 
 
 
