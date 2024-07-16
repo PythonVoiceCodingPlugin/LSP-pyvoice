@@ -72,12 +72,40 @@ This plugin is implemented as an [LSP](https://packagecontrol.io/packages/LSP) p
 
 ## Install the plugin
 
-Finally, install this package via Package Control using a custom repository
-	- Open the command palette `ctrl+shift+p` or `cmd+shift+p`
-	- run `Package Control: Add Repository`
-	- paste the url of this repository: `https://github.com/PythonVoiceCodingPlugin/LSP-pyvoice`
+> [!IMPORTANT]
+> At the time of this writing, my pull request to include this package in the default package control channel is pending. As a consequence, For the following steps to work, you will have to first manually add this package as a repository for package controll to search for. In order to do this
+>
+> - Open the command palette `ctrl+shift+p` or `cmd+shift+p`
+> - run `Package Control: Add Repository`
+> - paste the url of this repository: `https://github.com/PythonVoiceCodingPlugin/LSP-pyvoice`
+>
+> 
 
-Restart Sublime Text and navigate to any python file, you should see these in the sidebar
+> [!WARNING]
+> It is important to note that the aforementioned method is going to perform calls to `api.github.com` which is rate limited for non-authenticated requests. In that case, Package Control is going to print error messages in the sublime console (ctrl + `) and skip 
+> our custom repository, causing `LSP-pyvoice` not to show up in the search results. In that case, you can either 
+> - wait for the rate limit to reset 
+> - provide credentials in package control settings `Preferences > Package Settings > Package Control` 
+> - take the `LSP-pyvoice.sublime-package` file from the [latest release](https://github.com/PythonVoiceCodingPlugin/LSP-pyvoice/releases/) and manually paste it to your installed packages directory. To do that `Preferences > Browse Packages` the file Explorer will open  inside `~\AppData\Roaming\Sublime Text 3\Packages`. From there navigate to `~\AppData\Roaming\Sublime Text 3\Installed Packages` and paste the file 
+> - or you can manually install the package by git cloning this repository to your `Packages` directory  
+> 
+> I recommend either of the first two methods. 
+>
+
+
+To, install this package via Package Control 
+	- Open the command palette `ctrl+shift+p` or `cmd+shift+p`
+	- run `Package Control: Install Package`
+    - type `LSP-pyvoice` and install it
+
+Navigate to any python file, you should see these in the status
+
+![](https://github.com/PythonVoiceCodingPlugin/assets/main/sublime/status_bar.png)
+
+
+You may have to restart Sublime Text
+
+
 
 ## Install the grammar
 
