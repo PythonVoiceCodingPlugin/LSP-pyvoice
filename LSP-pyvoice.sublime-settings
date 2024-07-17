@@ -5,16 +5,13 @@
     "command": [
         "$server_path"
     ],
-
     // the python interpreter to use for installing and running
     // the pyvoice language server. it should be 3.8 and above
     // pypy may also work. If null, the plug-in will try to
     // automatically pick a suitable interpreter
     "python_binary": null,
-
     // environment variables to set when running the language server
     "env": {},
-
     // set the log level for the CLIENT SIDE code of the plugin
     // for example these will produce logs concerning 
     // - the interprocess communication with the programming 
@@ -28,33 +25,16 @@
     // - any errors detected during semantic analysis
     // - metadata about the hints that it generates
     // etc..
-    "log_level":"warning",
-
+    "log_level": "warning",
     // selectors to match the files that the language server
     // is responsible for
     "selector": "source.python",
-    // ST3
-    "languages": [
-        {
-            "languageId": "python",
-            "scopes": [
-                "source.python"
-            ],
-            "syntaxes": [
-                "Packages/Python/Python.sublime-syntax"
-            ],
-        }
-    ],
-
-
     // a set of settings/config that will be sent to the language server
     // via workspace/didChangeConfiguration notification
     // or retrieved by the workspace/configuration server side request.
     // these allow you to customize how pyvoice processes each of your projects
-
     "settings": {
         // Project settings used for configuring jedi Project
-
         // The base path where your python project is located.
         // Like all paths in this settings file it can be either
         // absolute or relative to the path of the sublime project.
@@ -64,7 +44,6 @@
         // containing your python code.for example:
         //      "project.path": "backend"
         "project.path": ".",
-
         // The path to the virtual environment for this project
         // again either absolute or relative to the sublime folder.
         // (NOT the project.path setting above)
@@ -89,29 +68,19 @@
         // However, it is still a good idea to only point this setting
         // to environments that you trust.
         "project.environmentPath": null,
-
         // A list of paths to override the sys path if needed.
         // Leave this null to generate sys.path from the environment.
         // WARNING: This will COMPLETELY override the sys.path 
         // generated from the environment.
         "project.sysPath": null,
-
         // Adds these paths at the end of the sys path.
         "project.addedSysPath": [],
-
         // If enabled (default), adds paths from local directories.
         // Otherwise, you will have to rely on your packages being properly configured on the sys.path.
         "project.smartSysPath": true,
-
-
-
         // Hints.Imports settings
-
-
         // Enable or disable the generation of stdlib imports.
         "hints.imports.stdlib.enabled": true,
-
-
         // Enable or disable the generation of third-party imports.
         // Pyvoice will try to automatically discover the  dependencies 
         // of your project  and  is going
@@ -126,15 +95,10 @@
         // NOTE: By default hints would be generated ONLY for your top level dependencies
         // aka distributions that you directly depend on, not transiet dependencies.
         "hints.imports.thirdParty.enabled": true,
-
         // A list of third-party distributions to include modules from.
         "hints.imports.thirdParty.includeDists": [],
-
         // A list of third-party distributions to exclude.
         "hints.imports.thirdParty.excludeDists": [],
-
-
-
         // Enable or disable the generation of project imports.
         // This generator is going to scan your project folders
         // recursively for pure python modules and generate hints for them.
@@ -147,7 +111,6 @@
         //    a set of packages/module names to folders containg their respective
         //    respective code is not supported to yet
         "hints.imports.project.enabled": true,
-
         // Enable or disable the generation of import hints for symbols
         // So far, all of the imports hints generators are targeting modules
         // However, there are cases where symbols like functions or classes
@@ -163,44 +126,29 @@
         // The explicit symbols generator allows you to define a 
         // list of modules that you want to generate hints for their symbols
         "hints.imports.explicitSymbols.enabled": true,
-
         // A list of modules to generate hints hints for their defined symbols.
-        "hints.imports.explicitSymbols.modules": ["typing"],
-
-
-
+        "hints.imports.explicitSymbols.modules": [
+            "typing"
+        ],
         // Hints.Expressions settings
-
-
         // Enable or disable the generation of hints hints for local scope.
         "hints.expressions.locals.enabled": true,
         // Hints from param names of the signatures of local scope variables. 
         "hints.expressions.locals.signature": true,
-
-
         // Enable or disable the generation of hints hints for non-local scope.
         "hints.expressions.nonlocals.enabled": true,
         // Hints from param names of the signatures of non-local scope variables. 
         "hints.expressions.nonlocals.signature": true,
-
-
         // Enable or disable the generation of hints hints for global scope.
         "hints.expressions.globals.enabled": true,
         // Hints from param names of the signatures of global scope variables. 
         "hints.expressions.globals.signature": true,
-
-
         // Enable or disable the generation of hints hints for built-in scope.
         "hints.expressions.builtins.enabled": true,
         // Hints from param names of the signatures of built-in scope variables. 
         "hints.expressions.builtins.signature": true,
-
-
         // An upper bound on the number of expressions to generate.
         "hints.expressions.limit": 2000,
-
-
-
         // Logging settings
         // Set the logging level for the pyvoice executable.
         "logging.level": "INFO"

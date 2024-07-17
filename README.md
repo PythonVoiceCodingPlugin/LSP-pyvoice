@@ -35,7 +35,7 @@ This is the sublime portion of [pyvoice](https://github.com/PythonVoiceCodingPlu
 
 This plugin is implemented as an [LSP](https://packagecontrol.io/packages/LSP) package and provides the following functionality
 
-- it automatically manages installing and updating the [pyvoice-language-server pypi package](https://pypi.org/project/pyvoice-language-server/) for you in its own seperate virtual environment that lives inside sublime's storage path (see [lsp_utils](https://github.com/sublimelsp/lsp_utils/)
+- it automatically manages installing and updating the [pyvoice-language-server pypi package](https://pypi.org/project/pyvoice-language-server/) for you in its own seperate virtual environment that lives inside sublime's storage path (see [lsp_utils](https://github.com/sublimelsp/lsp_utils/))
 
 - it listens for user events, such as opening  a file, focusing a tab, editing its contents and appropriately triggers the server to generate hints mapping to their pronunciations items such as
     - expressions (properly formatted)
