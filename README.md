@@ -155,18 +155,7 @@ The project builts on top of the standard [LSP client configuration](https://lsp
     // selectors to match the files that the language server
     // is responsible for
     "selector": "source.python",
-    // ST3
-    "languages": [
-        {
-            "languageId": "python",
-            "scopes": [
-                "source.python"
-            ],
-            "syntaxes": [
-                "Packages/Python/Python.sublime-syntax"
-            ],
-        }
-    ],
+
 
 
     // a set of settings/config that will be sent to the language server
