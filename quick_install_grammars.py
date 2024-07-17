@@ -141,11 +141,3 @@ class QuickInstallGrammarsInputHandler(sublime_plugin.ListInputHandler):
         return value
 
 
-def plugin_loaded():
-    logger.info("Quick install grammars plugin loaded")
-    window = sublime.active_window()
-    if not window:
-        return
-    window.run_command(
-        "quick_install_grammars",
-    )
