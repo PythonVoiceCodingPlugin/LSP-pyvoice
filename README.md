@@ -4,7 +4,7 @@ This is the sublime portion of [pyvoice](https://github.com/PythonVoiceCodingPlu
 
 
 <div>
-<img src="https://github.com/PythonVoiceCodingPlugin/assets/main/pyvoice_logo.png" align="right" height=320 width=320/>
+<img src="https://raw.githubusercontent.com/PythonVoiceCodingPlugin/assets/main/pyvoice_logo.png" align="right" height=320 width=320/>
 </div>
 
 <!-- MarkdownTOC  autolink="true" -->
@@ -79,7 +79,7 @@ To, install this package via Package Control
 
 Navigate to any python file, you should see these in the status
 
-![](https://github.com/PythonVoiceCodingPlugin/assets/main/sublime/status_bar.png)
+![](https://raw.githubusercontent.com//PythonVoiceCodingPlugin/assets/main/sublime/status_bar.png)
 
 
 You may have to restart Sublime Text
@@ -435,11 +435,11 @@ The following commands are available in the command palette `ctrl+shift+p` or `c
 
 To view full traffic, from the command palette (`ctrl+shift+p` or `cmd+shift+p`) run `LSP: Toggle Log Panel` or via right click at the box in the down left corner
 
-![](https://github.com/PythonVoiceCodingPlugin/assets/main/sublime/traffic_open.png)
+![](https://raw.githubusercontent.com/PythonVoiceCodingPlugin/assets/main/sublime/traffic_open.png)
 
 you should see a panel like this
 
-![](https://github.com/PythonVoiceCodingPlugin/assets/main/sublime/traffic_logs.png)
+![](https://raw.githubusercontent.com/PythonVoiceCodingPlugin/assets/main/sublime/traffic_logs.png)
 
 
 
