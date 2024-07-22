@@ -4,7 +4,7 @@ This is the sublime portion of [pyvoice](https://github.com/PythonVoiceCodingPlu
 
 
 <div>
-<img src="https://github.com/PythonVoiceCodingPlugin/assets/blob/main/pyvoice_logo.png" align="right" height=320 width=320/>
+<img src="https://github.com/PythonVoiceCodingPlugin/assets/main/pyvoice_logo.png" align="right" height=320 width=320/>
 </div>
 
 <!-- MarkdownTOC  autolink="true" -->
@@ -70,26 +70,6 @@ This plugin is implemented as an [LSP](https://packagecontrol.io/packages/LSP) p
     - depending on your build and version of LSP you install you may have to reboot sublime text
 
 ## Install the plugin
-
-> [!IMPORTANT]
-> At the time of this writing, my pull request to include this package in the default package control channel is pending. As a consequence, For the following steps to work, you will have to first manually add this package as a repository for package controll to search for. In order to do this
->
-> - Open the command palette `ctrl+shift+p` or `cmd+shift+p`
-> - run `Package Control: Add Repository`
-> - paste the url of this repository: `https://github.com/PythonVoiceCodingPlugin/LSP-pyvoice`
->
-> 
-
-> [!WARNING]
-> It is important to note that the aforementioned method is going to perform calls to `api.github.com` which is rate limited for non-authenticated requests. In that case, Package Control is going to print error messages in the sublime console (ctrl + `) and skip 
-> our custom repository, causing `LSP-pyvoice` not to show up in the search results. In that case, you can either 
-> - wait for the rate limit to reset 
-> - provide credentials in package control settings `Preferences > Package Settings > Package Control` 
-> - take the `LSP-pyvoice.sublime-package` file from the [latest release](https://github.com/PythonVoiceCodingPlugin/LSP-pyvoice/releases/) and manually paste it to your installed packages directory. To do that `Preferences > Browse Packages` the file Explorer will open  inside `~\AppData\Roaming\Sublime Text 3\Packages`. From there navigate to `~\AppData\Roaming\Sublime Text 3\Installed Packages` and paste the file 
-> - or you can manually install the package by git cloning this repository to your `Packages` directory  
-> 
-> I recommend either of the first two methods. 
->
 
 
 To, install this package via Package Control 
@@ -455,11 +435,11 @@ The following commands are available in the command palette `ctrl+shift+p` or `c
 
 To view full traffic, from the command palette (`ctrl+shift+p` or `cmd+shift+p`) run `LSP: Toggle Log Panel` or via right click at the box in the down left corner
 
-![](https://github.com/PythonVoiceCodingPlugin/assets/blob/main/sublime/traffic_open.png)
+![](https://github.com/PythonVoiceCodingPlugin/assets/main/sublime/traffic_open.png)
 
 you should see a panel like this
 
-![](https://github.com/PythonVoiceCodingPlugin/assets/blob/main/sublime/traffic_logs.png)
+![](https://github.com/PythonVoiceCodingPlugin/assets/main/sublime/traffic_logs.png)
 
 
 
