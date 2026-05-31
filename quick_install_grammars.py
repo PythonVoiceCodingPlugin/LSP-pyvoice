@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import logging
 import os
-
 import sublime
+
 import sublime_plugin
 
 logger = logging.getLogger(__name__)

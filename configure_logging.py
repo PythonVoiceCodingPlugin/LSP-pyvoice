@@ -1,10 +1,7 @@
-import logging
-import logging.config
-import logging.handlers
-import os
+from __future__ import annotations
 
+import logging
 import sublime
-import sublime_plugin
 
 DEFAULT_LOG_LEVEL = logging.INFO
 DEFAULT_LOG_LEVEL_NAME = logging.getLevelName(DEFAULT_LOG_LEVEL)

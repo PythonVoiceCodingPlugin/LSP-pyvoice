@@ -1,0 +1,7 @@
+[project]
+name = "lsp-pyvoice"
+version = "1.0"
+requires-python = ">=3.8.0,<3.13"
+dependencies = [
+    "pyvoice-language-server==0.1.4",
+]

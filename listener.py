@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import logging
+import sublime
 import threading
 import time
 
-import sublime
 import sublime_plugin
 
 logger = logging.getLogger(__name__)
@@ -48,7 +50,6 @@ class PyvoiceListener(sublime_plugin.EventListener):
     def __del__(self):
         self.kill_switch = True
         self.thread.join(1.0)
-        super(PyvoiceListener, self).__del__()
 
     def single_update_attempt(self):
         logger.debug("Beggining single update attempt")

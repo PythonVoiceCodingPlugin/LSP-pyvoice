@@ -1,73 +1,35 @@
-import base64
-import json
+from __future__ import annotations
+
 import logging
 import os
-from datetime import datetime
-from multiprocessing.connection import Client
-
 import sublime
-import sublime_plugin
-from LSP.plugin import register_plugin, unregister_plugin
-from LSP.plugin.core.typing import Dict
-from lsp_utils import notification_handler
-from lsp_utils.pip_client_handler import PipClientHandler
+from sublime_lib import ResourcePath
+
+from LSP.plugin import LspPlugin, OnPreStartContext, notification_handler
+from lsp_utils import UvVenvManager
+from typing_extensions import override
 
 from .ipc import send_notification
 
 logger = logging.getLogger(__name__)
 
 
-class Pyvoice(PipClientHandler):
-    package_name = __package__
-    requirements_txt_path = "requirements.txt"
-    server_filename = "pyvoice"
-
-    # --- PipClientHandler handlers ------------------------------------------------------------------------------------
+class Pyvoice(LspPlugin):
 
     @classmethod
-    def get_python_binary(cls) -> str:
-        settings = sublime.load_settings("{}.sublime-settings".format(cls.package_name))
-        python_binary = settings.get("python_binary")
-        if python_binary and isinstance(python_binary, str):
-            return python_binary
-        if sublime.platform() == "windows":
-            # with update to latest pygls got around the python3.11 and above crashing
-            allowed_python_binaries = [
-                os.path.expanduser(
-                    r"~\AppData\Local\Programs\Python\Python312\python.exe"
-                ),
-                os.path.expanduser(
-                    r"~\AppData\Local\Programs\Python\Python311\python.exe"
-                ),
-                os.path.expanduser(
-                    r"~\AppData\Local\Programs\Python\Python310\python.exe"
-                ),
-                os.path.expanduser(
-                    r"~\AppData\Local\Programs\Python\Python39\python.exe"
-                ),
-                os.path.expanduser(
-                    r"~\AppData\Local\Programs\Python\Python38\python.exe"
-                ),
-            ]
-            for python_binary in allowed_python_binaries:
-                if os.path.isfile(python_binary):
-                    return python_binary
-        else:
-            return "python3"
-        # return super().get_python_binary()
-
-    @classmethod
-    def get_additional_variables(cls) -> Dict[str, str]:
-        variables = super().get_additional_variables()
-        variables.update(
+    @override
+    def on_pre_start_async(cls, context: OnPreStartContext) -> None:
+        package_name = cls.plugin_storage_path.name
+        UvVenvManager.on_pre_start_async(
+            context, cls.plugin_storage_path, ResourcePath("Packages", package_name, 'server'), 'pyvoice')
+        context.variables.update(
             {
                 "sublime_py_files_dir": os.path.dirname(sublime.__file__),
             }
         )
-        return variables
 
     @notification_handler("voice/sendRpc")
-    def m_voice_sendRpc(self, params):
+    def on_voice_send_rpc(self, params) -> None:
         method = params["command"]
         cmd_params = params["params"]
         if not isinstance(method, str):
@@ -86,8 +48,8 @@ class Pyvoice(PipClientHandler):
 
 
 def plugin_loaded() -> None:
-    register_plugin(Pyvoice)
+    Pyvoice.register()
 
 
 def plugin_unloaded() -> None:
-    unregister_plugin(Pyvoice)
+    Pyvoice.unregister()

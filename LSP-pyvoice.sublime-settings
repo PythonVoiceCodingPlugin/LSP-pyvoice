@@ -5,11 +5,6 @@
     "command": [
         "$server_path"
     ],
-    // the python interpreter to use for installing and running
-    // the pyvoice language server. it should be 3.8 and above
-    // pypy may also work. If null, the plug-in will try to
-    // automatically pick a suitable interpreter
-    "python_binary": null,
     // environment variables to set when running the language server
     "env": {},
     // set the log level for the CLIENT SIDE code of the plugin

@@ -58,8 +58,6 @@ This plugin is implemented as an [LSP](https://packagecontrol.io/packages/LSP) p
 
 ## Pre-requisites
 
-- Make sure you have some version of [Python](https://www.python.org/downloads/) >= 3.8 installed on your system. This is needed for installing and running the pyvoice executable
-
 - Make sure you have [Package Control](https://packagecontrol.io/installation) installed in Sublime Text. If you install it for the first time, you may need to restart Sublime Text
 
 
@@ -98,7 +96,7 @@ The project builts on top of the standard [LSP client configuration](https://lsp
 
 ## Default settings
 
-```json
+```jsonc
 {
     // the command that actually launches the server process
     // leave this as is to use the automatically installed
@@ -106,12 +104,6 @@ The project builts on top of the standard [LSP client configuration](https://lsp
     "command": [
         "$server_path"
     ],
-
-    // the python interpreter to use for installing and running
-    // the pyvoice language server. it should be 3.8 and above
-    // pypy may also work. If null, the plug-in will try to
-    // automatically pick a suitable interpreter
-    "python_binary": null,
 
     // environment variables to set when running the language server
     "env": {},
@@ -316,7 +308,7 @@ To edit the settings for a specific project, click in the menu
 
 and add the following settings
 
-```json
+```jsonc
 {
 	"settings":
 	{
@@ -335,7 +327,7 @@ and add the following settings
 
 so for example if you want to point pyvoice to a virtual environment your sublime-project file  might look like this
 
-```json
+```jsonc
 {
     "settings":
     {
@@ -356,7 +348,7 @@ so for example if you want to point pyvoice to a virtual environment your sublim
 
 or to see debug logs from the server
 
-```json
+```jsonc
 {
     "settings":
     {
